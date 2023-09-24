@@ -16,6 +16,16 @@ float CurrentSense::getDCCurrent(float motor_electrical_angle){
         // if only two measured currents
         i_alpha = current.a;  
         i_beta = _1_SQRT3 * current.a + _2_SQRT3 * current.b;
+    }if(!current.a){
+        // if only two measured currents
+        float a = -current.c - current.b;
+        i_alpha = a;  
+        i_beta = _1_SQRT3 * a + _2_SQRT3 * current.b;
+    }if(!current.b){
+        // if only two measured currents
+        float b = -current.a - current.c;
+        i_alpha = current.a;  
+        i_beta = _1_SQRT3 * current.a + _2_SQRT3 * b;
     }else{
         // signal filtering using identity a + b + c = 0. Assumes measurement error is normally distributed.
         float mid = (1.f/3) * (current.a + current.b + current.c);
@@ -28,8 +38,12 @@ float CurrentSense::getDCCurrent(float motor_electrical_angle){
     // if motor angle provided function returns signed value of the current
     // determine the sign of the current
     // sign(atan2(current.q, current.d)) is the same as c.q > 0 ? 1 : -1  
-    if(motor_electrical_angle) 
-        sign = (i_beta * _cos(motor_electrical_angle) - i_alpha*_sin(motor_electrical_angle)) > 0 ? 1 : -1;  
+    if(motor_electrical_angle) {
+        float ct;
+        float st;
+        _sincos(motor_electrical_angle, &st, &ct);
+        sign = (i_beta*ct - i_alpha*st) > 0 ? 1 : -1;  
+    }
     // return current magnitude
     return sign*_sqrt(i_alpha*i_alpha + i_beta*i_beta);
 }
@@ -48,6 +62,16 @@ DQCurrent_s CurrentSense::getFOCCurrents(float angle_el){
         // if only two measured currents
         i_alpha = current.a;  
         i_beta = _1_SQRT3 * current.a + _2_SQRT3 * current.b;
+    }if(!current.a){
+        // if only two measured currents
+        float a = -current.c - current.b;
+        i_alpha = a;  
+        i_beta = _1_SQRT3 * a + _2_SQRT3 * current.b;
+    }if(!current.b){
+        // if only two measured currents
+        float b = -current.a - current.c;
+        i_alpha = current.a;  
+        i_beta = _1_SQRT3 * current.a + _2_SQRT3 * b;
     } else {
         // signal filtering using identity a + b + c = 0. Assumes measurement error is normally distributed.
         float mid = (1.f/3) * (current.a + current.b + current.c);
@@ -58,10 +82,18 @@ DQCurrent_s CurrentSense::getFOCCurrents(float angle_el){
     }
 
     // calculate park transform
-    float ct = _cos(angle_el);
-    float st = _sin(angle_el);
+    float ct;
+    float st;
+    _sincos(angle_el, &st, &ct);
     DQCurrent_s return_current;
     return_current.d = i_alpha * ct + i_beta * st;
     return_current.q = i_beta * ct - i_alpha * st;
     return return_current;
+}
+
+/**
+	Driver linking to the current sense
+*/
+void CurrentSense::linkDriver(BLDCDriver* _driver) {
+  driver = _driver;
 }

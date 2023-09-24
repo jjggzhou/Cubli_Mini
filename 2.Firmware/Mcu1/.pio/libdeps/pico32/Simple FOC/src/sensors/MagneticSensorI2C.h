@@ -2,7 +2,7 @@
 #define MAGNETICSENSORI2C_LIB_H
 
 #include "Arduino.h"
-#include <C:/Users/Administrator/.platformio/packages/framework-arduinoespressif32@src-f10a7ed2306067c023b128ae96ba301b/libraries/Wire/src/Wire.h>
+#include <Wire.h>
 #include "../common/base_classes/Sensor.h"
 #include "../common/foc_utils.h"
 #include "../common/time_utils.h"
@@ -50,6 +50,9 @@ class MagneticSensorI2C: public Sensor{
 
     /** experimental function to check and fix SDA locked LOW issues */
     int checkBus(byte sda_pin , byte scl_pin );
+
+    /** current error code from Wire endTransmission() call **/
+    uint8_t currWireError = 0;
 
   private:
     float cpr; //!< Maximum range of the magnetic sensor
