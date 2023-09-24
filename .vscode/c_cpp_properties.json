@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "C:/Users/jason/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/esp_common/include"
             ],
             "defines": [
                 "_DEBUG",
