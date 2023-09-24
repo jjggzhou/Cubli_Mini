@@ -1,10 +1,16 @@
-# Arduino Simple Field Oriented Control (FOC) library 
-
+# SimpleFOClibrary - **Simple** Field Oriented Control (FOC) **library** <br> 
+### A Cross-Platform FOC implementation for BLDC and Stepper motors<br> based on the Arduino IDE and PlatformIO 
 
 ![Library Compile](https://github.com/simplefoc/Arduino-FOC/workflows/Library%20Compile/badge.svg)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/simplefoc/arduino-foc)
+![GitHub Release Date](https://img.shields.io/github/release-date/simplefoc/arduino-foc?color=blue)
+![GitHub commits since tagged version](https://img.shields.io/github/commits-since/simplefoc/arduino-foc/latest/dev)
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/simplefoc/arduino-foc/dev)
+
 [![arduino-library-badge](https://www.ardu-badge.com/badge/Simple%20FOC.svg?)](https://www.ardu-badge.com/badge/Simple%20FOC.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![status](https://joss.theoj.org/papers/4382445f249e064e9f0a7f6c1bb06b1d/status.svg)](https://joss.theoj.org/papers/4382445f249e064e9f0a7f6c1bb06b1d)
+
 
 We live in very exciting times 😃! BLDC motors are entering the hobby community more and more and many great projects have already emerged leveraging their far superior dynamics and power capabilities. BLDC motors have numerous advantages over regular DC motors but they have one big disadvantage, the complexity of control. Even though it has become relatively easy to design and manufacture PCBs and create our own hardware solutions for driving BLDC motors the proper low-cost solutions are yet to come. One of the reasons for this is the apparent complexity of writing the BLDC driving algorithms, Field oriented control (FOC) being an example of one of the most efficient ones.
 The solutions that can be found on-line are almost exclusively very specific for certain hardware configuration and the microcontroller architecture used.
@@ -13,35 +19,25 @@ Therefore this is an attempt to:
 - 🎯 Demystify FOC algorithm and make a robust but simple Arduino library: [Arduino *SimpleFOClibrary*](https://docs.simplefoc.com/arduino_simplefoc_library_showcase)
   - <i>Support as many <b>motor + sensor + driver + mcu</b> combinations out there</i>
 - 🎯 Develop a modular FOC supporting BLDC driver boards:
+   - ***NEW*** 📢: *Minimalistic* BLDC driver (<3Amps) :   [<span class="simple">Simple<b>FOC</b>Mini</span> ](https://github.com/simplefoc/SimpleFOCMini).
    - *Low-power* gimbal driver (<5Amps) :  [*Arduino Simple**FOC**Shield*](https://docs.simplefoc.com/arduino_simplefoc_shield_showcase).
-   - ***NEW*** 📢: *Medium-power* BLDC driver (<30Amps): [Arduino <span class="simple">Simple<b>FOC</b>PowerShield</span> ](https://github.com/simplefoc/Arduino-SimpleFOC-PowerShield).
+   - *Medium-power* BLDC driver (<30Amps): [Arduino <span class="simple">Simple<b>FOC</b>PowerShield</span> ](https://github.com/simplefoc/Arduino-SimpleFOC-PowerShield).
    - See also [@byDagor](https://github.com/byDagor)'s *fully-integrated* ESP32 based board: [Dagor Brushless Controller](https://github.com/byDagor/Dagor-Brushless-Controller)
 
+> NEW RELEASE 📢 : <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.3.1
+> - Support for Arduino UNO R4 Minima (Renesas R7FA4M1 MCU - note UNO R4 WiFi is not yet supported)
+> - Support setting PWM polarity on ESP32 (thanks to [@mcells](https://github.com/mcells))
+> - Expose I2C errors in MagneticSensorI2C (thanks to [@padok](https://github.com/padok))
+> - Improved default trig functions (sine, cosine) - faster, smaller
+> - Overridable trig functions - plug in your own optimized versions
+> - Bugfix: microseconds overflow in velocity mode [#287](https://github.com/simplefoc/Arduino-FOC/issues/287)
+> - Bugfix: KV initialization ([5fc3128](https://github.com/simplefoc/Arduino-FOC/commit/5fc3128d282b65c141ca486327c6235089999627))
+> - And more bugfixes - see the [complete list of 2.3.1 fixes here](https://github.com/simplefoc/Arduino-FOC/issues?q=is%3Aissue+milestone%3A2.3.1_Release)
+> - Change: simplify initFOC() API ([d57d32d](https://github.com/simplefoc/Arduino-FOC/commit/d57d32dd8715dbed4e476469bc3de0c052f1d531). [5231e5e](https://github.com/simplefoc/Arduino-FOC/commit/5231e5e1d044b0cc33ede67664b6ef2f9d0a8cdf), [10c5b87](https://github.com/simplefoc/Arduino-FOC/commit/10c5b872672cab72df16ddd738bbf09bcce95d28))
+> - Change: check for linked driver in currentsense and exit gracefully ([5ef4d9d](https://github.com/simplefoc/Arduino-FOC/commit/5ef4d9d5a92e03da0dd5af7f624243ab30f1b688))
+> - Compatibility with newest versions of Arduino framework for STM32, Renesas, ESP32, Atmel SAM, Atmel AVR, nRF52 and RP2040
 
-
-<blockquote class="info">
-   <p class="heading">NEW RELEASE 📢: <span class="simple">Simple<span class="foc">FOC</span>library</span> v2.2.1 <a href="https://github.com/simplefoc/Arduino-FOC/releases/tag/v2.2.1">see release</a></p>
-   <ul>
-      <li>Sensor class init bugfix <a href="https://github.com/simplefoc/Arduino-FOC/issues/121">#121</a></li>
-      <li>Voltage/current limit handling bugs <a href="https://github.com/simplefoc/Arduino-FOC/issues/118">#118</a></li>
-      <li>Added the new motion control interface to the commander <a href="https://docs.simplefoc.com/commander_target">see docs</a>
-      <ul>
-         <li>New target setting - possible to set the position, velocity and torque target at once</li>
-         <li>Separated the motion control interface from full motor callback - only motion control and torque control type, enable disable and target setting</li>
-      </ul>
-      </li>
-      <li>New MCU support <a href="https://docs.simplefoc.com/microcontrollers">see docs</a>
-      <ul>
-        <li>NRF52 series mcus support by <a href="https://github.com/Polyphe">@Polyphe</a></li>
-        <li><b>esp32 arduino package transfer to v2.0.1+</b> - helpful <a href="https://github.com/simplefoc/Arduino-FOC/pull/92/149">PR#149</a> by <a href="https://github.com/samguns">samguns</a></li>
-        <li>Initial support for esp32s2 and esp32s3 - separation of the esp32 mcpwm and led implementation</li>
-      </ul>
-      </li>
-      <li>Generic sensor class - to implement a new sensor only implement one function <a href="https://docs.simplefoc.com/generic_sensor">see docs</a></li>
-      </ul>
-</blockquote>
-
-## Arduino *SimpleFOClibrary* v2.2
+## Arduino *SimpleFOClibrary* v2.3.1
 
 <p align="">
 <a href="https://youtu.be/Y5kLeqTc6Zk">
@@ -51,58 +47,43 @@ Therefore this is an attempt to:
 
 This video demonstrates the *Simple**FOC**library* basic usage, electronic connections and shows its capabilities.
 
-
 ### Features
-- **Arduino compatible**: 
-   - Arduino library code
-  - Arduino Library Manager integration
+- **Easy install**: 
+   - Arduino IDE: Arduino Library Manager integration
+   - PlatformIO
 - **Open-Source**: Full code and documentation available on github
+- **Goal**: 
+   - Support as many [sensor](https://docs.simplefoc.com/position_sensors) + [motor](https://docs.simplefoc.com/motors) + [driver](https://docs.simplefoc.com/drivers) + [current sense](https://docs.simplefoc.com/current_sense)   combination as possible.
+   - Provide the up-to-date and in-depth documentation with API references and the examples
 - **Easy to setup and configure**: 
-  - Easy hardware configuration
-  - Easy [tuning the control loops](https://docs.simplefoc.com/motion_control)
-- **Modular**:
-  - Supports as many [sensors,  BLDC motors  and  driver boards](https://docs.simplefoc.com/supported_hardware) as possible
-  - Supports multiple [MCU architectures](https://docs.simplefoc.com/microcontrollers):
-     - Arduino: UNO, MEGA, any board with ATMega328 chips
-     - STM32 boards: [Nucleo](https://www.st.com/en/evaluation-tools/stm32-nucleo-boards.html), [Bluepill](https://stm32-base.org/boards/STM32F103C8T6-Blue-Pill.html) ...
-     - ESP32
-     - Teensy boards
-- **Plug & play**: Arduino <span class="simple">Simple<span class="foc">FOC</span>Shield</span>  
+   - Easy hardware configuration 
+   - Each hardware component is a C++ object (easy to understand) 
+   - Easy [tuning the control loops](https://docs.simplefoc.com/motion_control)
+   - [*Simple**FOC**Studio*](https://docs.simplefoc.com/studio) configuration GUI tool
+   - Built-in communication and monitoring
+- **Cross-platform**:
+   - Seamless code transfer from one microcontroller family to another 
+   - Supports multiple [MCU architectures](https://docs.simplefoc.com/microcontrollers):
+      - Arduino: UNO R4, UNO, MEGA, DUE, Leonardo, Nano, Nano33 ....
+      - STM32
+      - ESP32
+      - Teensy
+      - many more ...
 
 <p align=""> <img src="https://docs.simplefoc.com/extras/Images/uno_l6234.jpg"  height="170px">  <img src="https://docs.simplefoc.com/extras/Images/hmbgc_v22.jpg" height="170px">  <img src="https://docs.simplefoc.com/extras/Images/foc_shield_v13.jpg"  height="170px"></p>
 
-## Arduino *SimpleFOCShield* v2.0.4
-<p align="">
-<a href="https://youtu.be/G5pbo0C6ujE">
-<img src="https://docs.simplefoc.com/extras/Images/foc_shield_video.jpg"  height="320px">
-</a>
-</p>
 
-### Features
-- **Plug & play**: In combination with Arduino *Simple**FOC**library* - [github](https://github.com/simplefoc/Arduino-FOC)
-- **Low-cost**: Price of €15 - [Check the pricing](https://www.simplefoc.com/shop) 
-- **In-line current sensing**: Up to 3Amps/5Amps bidirectional
-   - configurable: 3.3Amps - 3.3V adc, 5Amps - 5V adc
-- **Integrated 8V regulator**: 
-   - Enable/disable by soldering pads
-- **Max power 120W** - max current 5A, power-supply 12-24V
-   - Designed for Gimbal motors with the internal resistance >10 Ωs. 
-- **Stackable**: running 2 motors in the same time
-- **Encoder/Hall sensors interface**: Integrated 3.3kΩ pullups (configurable)
-- **I2C interface**: Integrated 4.7kΩ pullups (configurable)
-- **Configurable pinout**: Hardware configuration - soldering connections
-- **Arduino headers**: Arduino UNO, Arduino MEGA, STM32 Nucleo boards...
-- **Open Source**: Fully available fabrication files - [how to make it yourself](https://docs.simplefoc.com/arduino_simplefoc_shield_fabrication)
+## Documentation
+Full API code documentation as well as example projects and step by step guides can be found on our [docs website](https://docs.simplefoc.com/).
 
-<p align=""><img src="https://simplefoc.com/assets/img/v2.jpg" height="180px">   <img src="https://simplefoc.com/assets/img/v1.jpg"  height="180px"> <img src="https://docs.simplefoc.com/extras/Images/simple_foc_shield_v13_small.gif"  height="180x"></p>
-
+![image](https://user-images.githubusercontent.com/36178713/168475410-105e4e3d-082a-4015-98ff-d380c7992dfd.png)
 
 
 ## Getting Started
 Depending on if you want to use this library as the plug and play Arduino library or you want to get insight in the algorithm and make changes there are two ways to install this code.
 
 - Full library installation [Docs](https://docs.simplefoc.com/library_download)
-- Minimal project builder [Docs](https://docs.simplefoc.com/minimal_download)
+- PlatformIO [Docs](https://docs.simplefoc.com/library_platformio)
 
 ### Arduino *SimpleFOClibrary* installation to Arduino IDE
 #### Arduino Library Manager 
@@ -125,14 +106,21 @@ git clone https://github.com/simplefoc/Arduino-FOC.git
 ```
 - Reopen Arduino IDE and you should have the library examples in `File > Examples > Simple FOC`.
 
-###  *SimpleFOClibrary* minimal project builder
+## Community and contributing
 
-For those willing to experiment and to modify the code I suggest using the minimal project builder [minimal branch](https://github.com/simplefoc/Arduino-FOC/tree/minimal). 
- > This code is completely independent and you can run it as any other Arduino Sketch without the need for any libraries. 
+For all the questions regarding the potential implementation, applications, supported hardware and similar please visit our [community forum](https://community.simplefoc.com) or our [discord server](https://discord.gg/kWBwuzY32n).
 
-All you need to do is:
-- Go to [minimal branch](https://github.com/simplefoc/Arduino-FOC/tree/minimal) 
-- Follow the tutorial in the README file and choose only the library files that are necessary for your application.
+It is always helpful to hear the stories/problems/suggestions of people implementing the code and you might find a lot of answered questions there already! 
+
+### Github Issues & Pull requests
+
+Please do not hesitate to leave an issue if you have problems/advices/suggestions regarding the code!
+
+Pull requests are welcome, but let's first discuss them in [community forum](https://community.simplefoc.com)!
+
+If you'd like to contribute to this project but you are not very familiar with github, don't worry, let us know either by posting at the community forum , by posting a github issue or at our discord server.
+
+If you are familiar, we accept pull requests to the dev branch!
 
 ## Arduino code example
 This is a simple Arduino code example implementing the velocity control program of a BLDC motor with encoder. 
@@ -206,13 +194,30 @@ Here are some of the *Simple**FOC**library* and *Simple**FOC**Shield* applicatio
 </p>
 
 
-## Documentation
-Find out more information about the Arduino SimpleFOC project in [docs website](https://docs.simplefoc.com/) 
+## Citing the *SimpleFOC* 
 
+We are very happy that *Simple**FOC**library* has been used as a component of several research project and has made its way to several scientific papers.  We are hoping that this trend is going to continue as the project matures and becomes more robust! 
+A short resume paper about *Simple**FOC*** has been published in the Journal of Open Source Software: 
+<p>
+  <b><i>SimpleFOC</i></b>: A Field Oriented Control (FOC) Library for Controlling Brushless Direct Current (BLDC) and Stepper Motors.<br>
+  A. Skuric, HS. Bank, R. Unger, O. Williams, D. González-Reyes<br>
+Journal of Open Source Software, 7(74), 4232, https://doi.org/10.21105/joss.04232
+</p>
 
-## Arduino FOC repo structure
-Branch  | Description | Status
------------- | ------------- | ------------ 
-[master](https://github.com/simplefoc/Arduino-FOC) | Stable and tested library version | ![Library Compile](https://github.com/simplefoc/Arduino-FOC/workflows/Library%20Compile/badge.svg)
-[dev](https://github.com/simplefoc/Arduino-FOC/tree/dev) | Development library version | ![Library Dev Compile](https://github.com/simplefoc/Arduino-FOC/workflows/Library%20Dev%20Compile/badge.svg?branch=dev)
-[minimal](https://github.com/simplefoc/Arduino-FOC/tree/minimal) | Minimal Arduino example with integrated library | ![MinimalBuild](https://github.com/simplefoc/Arduino-FOC/workflows/MinimalBuild/badge.svg?branch=minimal)
+If you are interested in citing  *Simple**FOC**library* or some other component of *Simple**FOC**project* in your research, we suggest you to cite our paper:
+
+```bib
+@article{simplefoc2022,
+  doi = {10.21105/joss.04232},
+  url = {https://doi.org/10.21105/joss.04232},
+  year = {2022},
+  publisher = {The Open Journal},
+  volume = {7},
+  number = {74},
+  pages = {4232},
+  author = {Antun Skuric and Hasan Sinan Bank and Richard Unger and Owen Williams and David González-Reyes},
+  title = {SimpleFOC: A Field Oriented Control (FOC) Library for Controlling Brushless Direct Current (BLDC) and Stepper Motors},
+  journal = {Journal of Open Source Software}
+}
+
+```
